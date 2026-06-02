@@ -7,3 +7,4 @@
 #include "exif.hpp"
 #include "resize.hpp"
 #include "container.hpp"
+#include "ffmpeg.hpp"   // subprocess bridge to grioghar/ffmpeg
