@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -34,7 +35,7 @@ struct Image {
 
     bool valid() const {
         if (width <= 0 || height <= 0) return false;
-        return pixels.size() == static_cast<size_t>(width) * height * channels();
+        return pixels.size() == static_cast<std::size_t>(width) * height * channels();
     }
 };
 

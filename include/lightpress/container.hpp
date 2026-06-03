@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -16,10 +17,10 @@ struct ContainerStripOptions {
 // and return the rewritten container bytes. The encoded video/audio bitstreams
 // are passed through unchanged -- no transcoding occurs.
 // Returns empty vector on parse failure.
-std::vector<uint8_t> strip_mp4_metadata(const uint8_t* data, size_t len,
-                                         const ContainerStripOptions& opts = {});
+std::vector<std::uint8_t> strip_mp4_metadata(const std::uint8_t* data, std::size_t len,
+                                             const ContainerStripOptions& opts = {});
 
 // Returns total bytes of removable metadata in the container.
-size_t mp4_metadata_bytes(const uint8_t* data, size_t len);
+std::size_t mp4_metadata_bytes(const std::uint8_t* data, std::size_t len);
 
 } // namespace lp

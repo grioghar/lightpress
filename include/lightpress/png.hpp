@@ -1,5 +1,7 @@
 #pragma once
 #include "image.hpp"
+#include <cstddef>
+#include <cstdint>
 #include <vector>
 
 namespace lp {
@@ -9,7 +11,7 @@ struct PngEncodeOptions {
     bool strip_metadata = true;  // drop tEXt/iTXt/zTXt/eXIf chunks
 };
 
-std::vector<uint8_t> png_encode(const Image& img, const PngEncodeOptions& opts = {});
-Image png_decode(const uint8_t* data, size_t len);
+std::vector<std::uint8_t> png_encode(const Image& img, const PngEncodeOptions& opts = {});
+Image png_decode(const std::uint8_t* data, std::size_t len);
 
 } // namespace lp
