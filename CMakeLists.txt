@@ -27,23 +27,37 @@ if(NOT MSVC AND NOT WIN32)
   target_link_libraries(lightpress PUBLIC m)
 endif()
 
-enable_testing()
+# Build lightpress's own tests/benchmark only when it is the top-level project.
+# When embedded via add_subdirectory() (e.g. as a submodule of another project),
+# default OFF so the parent's `ctest` run does not pick up — and fail on — these
+# test registrations. Can be forced with -DLIGHTPRESS_BUILD_TESTS=ON/OFF.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  set(_lp_default_tests ON)
+else()
+  set(_lp_default_tests OFF)
+endif()
+option(LIGHTPRESS_BUILD_TESTS "Build lightpress tests and benchmark"
+       ${_lp_default_tests})
 
-foreach(t jpeg png exif resize container)
-  add_executable(test_${t} tests/test_${t}.cpp)
-  target_link_libraries(test_${t} PRIVATE lightpress)
-  # Tests must run with assertions enabled regardless of build type
-  if(MSVC)
-    target_compile_options(test_${t} PRIVATE /UNDEBUG)
-  else()
-    target_compile_options(test_${t} PRIVATE -UNDEBUG)
-  endif()
-  add_test(NAME ${t} COMMAND test_${t})
-endforeach()
+if(LIGHTPRESS_BUILD_TESTS)
+  enable_testing()
 
-# bench_ffmpeg is always built but skips internally if ffmpeg is absent on PATH
-add_executable(bench_ffmpeg tests/bench_ffmpeg.cpp)
-target_link_libraries(bench_ffmpeg PRIVATE lightpress)
+  foreach(t jpeg png exif resize container)
+    add_executable(test_${t} tests/test_${t}.cpp)
+    target_link_libraries(test_${t} PRIVATE lightpress)
+    # Tests must run with assertions enabled regardless of build type
+    if(MSVC)
+      target_compile_options(test_${t} PRIVATE /UNDEBUG)
+    else()
+      target_compile_options(test_${t} PRIVATE -UNDEBUG)
+    endif()
+    add_test(NAME ${t} COMMAND test_${t})
+  endforeach()
+
+  # bench_ffmpeg is always built but skips internally if ffmpeg is absent on PATH
+  add_executable(bench_ffmpeg tests/bench_ffmpeg.cpp)
+  target_link_libraries(bench_ffmpeg PRIVATE lightpress)
+endif()
 
 # ── grioghar/ffmpeg integration ───────────────────────────────────────────
 # lightpress uses ffmpeg as an OPTIONAL subprocess for operations outside
